@@ -1,1 +1,6 @@
-build/
+/data/build/tmp/
+/data/build/sstate-cache/
+/data/build/cache/
+/data/build/downloads/
+/data/build/bitbake-cookerdaemon.log
+
