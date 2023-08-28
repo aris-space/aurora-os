@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. First run the setup script: `./scripts/init.sh`
+1. First run the setup script: `./scripts/fetch_distribution_package.sh`
 1. Install Docker
 
 ## Build the minimal image for the STM32MP157c-DK2
@@ -10,7 +10,7 @@
 1. Build the docker container: `./scripts/build_docker.sh`
 1. Start the docker container: `./scripts/start_docker.sh`
 1. You should now be in the docker container. (The terminal should be showing something like this: `dev@cedcfed28edf:/#`
-1. Move to /data/yocto-labs
+1. Move to /data/minimal_image/yocto-labs
 1. `source poky/oe-init-build-env
 1. You should now be in the `/data/yocto-labs/build` directory
 1. Run `bitbake core-image-base` to build the image
@@ -22,11 +22,11 @@
 1. Build the docker container: `./scripts/build_docker.sh`
 1. Start the docker container: `./scripts/start_docker.sh`
 1. You should now be in the docker container. (The terminal should be showing something like this: `dev@cedcfed28edf:/#`
-1. Move to /data/openstlinux-5.10-dunfell-mp1-21-03-31
-1. Run `DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh`
+1. Move to /data/
+1. Run `source scripts/setup_env.sh`
    1. Accept the EULA, if required
 1. You should now be in the following directory: `/data/openstlinux-5.10-dunfell-mp1-21-03-31/build-openstlinuxweston-stm32mp1`
-1. Run `bitbake st-image-weston` to build the image
+1. Run `bitbake aurora-image-core` to build the image
 1. Exit the docker container
 1. Insert your SD-card, and unmount all partitions on it or format it
 1. From the `aurora-os` folder, run: `./scripts/write_to_sd.sh <sd_card_device_path>`

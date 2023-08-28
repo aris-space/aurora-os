@@ -1,10 +1,5 @@
 /.idea
-/data/build/tmp/
-/data/build/sstate-cache/
-/data/build/cache/
-/data/build/downloads/
+/data/minimal_image/
 /data/build/bitbake-cookerdaemon.log
-/data/openstlinux-5.10-dunfell-mp1-21-03-31/build-openstlinuxweston-stm32mp1/
-/data/openstlinux-5.10-dunfell-mp1-21-03-31/layers/
-/data/openstlinux-5.10-dunfell-mp1-21-03-31/.repo/
+/data/openstlinux-5.10-dunfell-mp1-21-03-31/
 
