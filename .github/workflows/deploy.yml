@@ -21,8 +21,9 @@ jobs:
 
       - name: Checkout repo
         run: |
-          sudo apt install repo
-          sudo chmod +x fetch_distribution_package.sh
+          ls -lah
+          sudo apt-get install repo
+          sudo chmod +x scripts/fetch_distribution_package.sh
           ./scripts/fetch_distribution_package.sh
 
       - name: Install docker
