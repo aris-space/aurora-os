@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y gawk wget git-core diffstat unzip texin
                                              xz-utils debianutils iputils-ping python3-git \
                                              python3-jinja2 libegl1-mesa libsdl1.2-dev xterm \
                                              locales python3-distutils libssl-dev gdisk sudo \
-                                             libgmp-dev libmpc-dev pylint file zstd lz4 vim
+                                             libgmp-dev libmpc-dev pylint file zstd lz4 vim bsdmainutils
 
 RUN groupadd -g 1000 dev \
 			&& useradd -u 1000 -g dev -d /home/dev dev \
@@ -26,7 +26,7 @@ ENV LANG en_US.UTF-8
 
 USER dev
 
-RUN git config --global user.mail "janko.uehlinger@infosys.ch"
+RUN git config --global user.email "janko.uehlinger@infosys.ch"
 RUN git config --global user.name "Janko Uehlinger"
 
 WORKDIR /home/dev
