@@ -45,12 +45,16 @@ jobs:
           sudo chmod +x scripts/build_docker.sh
           sudo ./scripts/build_docker.sh
           sudo systemctl start docker
-          sudo docker rm ubuntu-yocto
-          sudo docker run -d -P --name ubuntu-yocto -v ./data/:/data ubuntu-yocto
-          sudo docker exec ubuntu-yocto cd /data
-          sudo docker exec ubuntu-yocto source scripts/setup_env.sh
-          sudo docker exec ubuntu-yocto bitbake aurora-image-core
-          sudo docker exec ubuntu-yocto bitbake -c populate_sdk aurora-image-core
+          sudo docker rm yocto
+          echo "old container removed"
+          sudo docker ps -a
+          docker images
+          sudo docker run -d -P --name yocto -v ./data/:/data ubuntu-yocto
+          echo "running container in detached state"
+          sudo docker exec yocto cd /data
+          sudo docker exec yocto source scripts/setup_env.sh
+          sudo docker exec yocto bitbake aurora-image-core
+          sudo docker exec yocto bitbake -c populate_sdk aurora-image-core
 
 
       #- name: Run the Yocto build in the docker container and create the SDK
