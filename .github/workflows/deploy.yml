@@ -47,8 +47,8 @@ jobs:
 
       - name: Run the Yocto build in the docker container and create the SDK
         run: |
-          sudo chmod +x scripts/run_docker.sh
-          sudo start_docker.sh
+          sudo chmod +x scripts/start_docker.sh
+          sudo ./scripts/start_docker.sh
           cd data
           source scripts/setup_env.sh
           bitbake aurora-image-core
