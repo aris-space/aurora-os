@@ -21,10 +21,9 @@ jobs:
 
       - name: Checkout repo
         run: |
-          ls -lah
           sudo apt install repo
-          sudo chmod +x aurora-os/fetch_distribution_package.sh
-          ./aurora-os/scripts/fetch_distribution_package.sh
+          sudo chmod +x fetch_distribution_package.sh
+          ./scripts/fetch_distribution_package.sh
 
       - name: Install docker
         run: |
@@ -42,35 +41,33 @@ jobs:
 
       - name: Build the docker image
         run: |
-          cd aurora-os
           sudo chmod +x scripts/build_docker.sh
           sudo ./scripts/build_docker.sh
 
       - name: Run the Yocto build in the docker container and create the SDK
         run: |
-          cd aurora-os
           sudo chmod +x scripts/run_docker.sh
           sudo start_docker.sh
-          cd /data
+          cd data
           source scripts/setup_env.sh
           bitbake aurora-image-core
           bitbake -c populate_sdk aurora-image-core
 
       - name: Create the SD card image
         run: |
-          cd aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/scripts
+          cd data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/scripts
           ./create_sdcard_from_flashlayout.sh ../flashlayout_aurora-image-core/extensible/FlashLayout_sdcard_stm32mp157c-dk2-extensible.tsv
 
       - name: Save the SD card image as an artifact
         uses: actions/upload-artifact@v3
         with:
           name: sd_card_image
-          path: aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/FlashLayout_sdcard_stm32mp157c-dk2-extensible.raw
+          path: data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/FlashLayout_sdcard_stm32mp157c-dk2-extensible.raw
 
       - name: Save the SDK as an artifact
         uses: actions/upload-artifact@v3
         with:
           name: sdk
-          path: aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/sdk/
+          path: data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/sdk/
 
 
