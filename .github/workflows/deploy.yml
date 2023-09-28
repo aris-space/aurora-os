@@ -45,12 +45,12 @@ jobs:
           sudo chmod +x scripts/build_docker.sh
           sudo ./scripts/build_docker.sh
           sudo systemctl start docker
-          sudo docker rm yocto
-          sudo docker run -d -P --name yocto -v ~/Projects/aurora-os/data/:/data yocto
-          sudo docker exec cd /data
-          sudo docker exec source scripts/setup_env.sh
-          sudo docker exec bitbake aurora-image-core
-          sudo docker exec bitbake -c populate_sdk aurora-image-core
+          sudo docker rm ubuntu-yocto
+          sudo docker run -d -P --name ubuntu-yocto -v ./data/:/data ubuntu-yocto
+          sudo docker exec ubuntu-yocto cd /data
+          sudo docker exec ubuntu-yocto source scripts/setup_env.sh
+          sudo docker exec ubuntu-yocto bitbake aurora-image-core
+          sudo docker exec ubuntu-yocto bitbake -c populate_sdk aurora-image-core
 
 
       #- name: Run the Yocto build in the docker container and create the SDK
