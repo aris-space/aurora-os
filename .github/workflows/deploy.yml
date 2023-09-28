@@ -50,6 +50,7 @@ jobs:
           docker images
           sudo docker run -d -P --name yocto -v ./data/:/data ubuntu-yocto
           echo "running container in detached state"
+          sudo docker ps
           sudo docker exec yocto cd /data
           sudo docker exec yocto source scripts/setup_env.sh
           sudo docker exec yocto bitbake aurora-image-core
