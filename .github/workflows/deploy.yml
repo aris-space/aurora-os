@@ -45,7 +45,6 @@ jobs:
           sudo chmod +x scripts/build_docker.sh
           sudo ./scripts/build_docker.sh
           sudo systemctl start docker
-          sudo docker rm yocto
           echo "old container removed"
           sudo docker ps -a
           docker images
