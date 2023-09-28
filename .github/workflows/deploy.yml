@@ -1,0 +1,76 @@
+permissions:
+  contents: read
+on:
+  push:
+    branches: [main]
+    pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+name: deploy
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    name: ubuntu build
+
+    steps:
+      - uses: actions/checkout@main
+        with:
+          submodules: true
+
+      - name: Checkout repo
+        run: |
+          ls -lah
+          sudo apt install repo
+          sudo chmod +x aurora-os/fetch_distribution_package.sh
+          ./aurora-os/scripts/fetch_distribution_package.sh
+
+      - name: Install docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install ca-certificates curl gnupg
+          sudo install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          sudo chmod a+r /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+      - name: Build the docker image
+        run: |
+          cd aurora-os
+          sudo chmod +x scripts/build_docker.sh
+          sudo ./scripts/build_docker.sh
+
+      - name: Run the Yocto build in the docker container and create the SDK
+        run: |
+          cd aurora-os
+          sudo chmod +x scripts/run_docker.sh
+          sudo start_docker.sh
+          cd /data
+          source scripts/setup_env.sh
+          bitbake aurora-image-core
+          bitbake -c populate_sdk aurora-image-core
+
+      - name: Create the SD card image
+        run: |
+          cd aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/scripts
+          ./create_sdcard_from_flashlayout.sh ../flashlayout_aurora-image-core/extensible/FlashLayout_sdcard_stm32mp157c-dk2-extensible.tsv
+
+      - name: Save the SD card image as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sd_card_image
+          path: aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/FlashLayout_sdcard_stm32mp157c-dk2-extensible.raw
+
+      - name: Save the SDK as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sdk
+          path: aurora-os/data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/sdk/
+
+
