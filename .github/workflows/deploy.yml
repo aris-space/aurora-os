@@ -51,9 +51,7 @@ jobs:
           sudo docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
           echo "running container in detached state"
           sudo docker ps
-          sudo docker exec -i yocto -c "cd /data && source scripts/setup_env.sh"
-          sudo docker exec -i yocto -c "bitbake aurora-image-core"
-          sudo docker exec -i yocto -c "bitbake -c populate_sdk aurora-image-core"
+          sudo docker exec -i -w /data yocto -c "source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
 
 
       #- name: Run the Yocto build in the docker container and create the SDK
