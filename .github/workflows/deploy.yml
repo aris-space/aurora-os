@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Install Git
-        run: sudo apt-get install git-core
+        run: apt-get install git-core
 
       - uses: actions/checkout@main
         with: 
@@ -26,38 +26,38 @@ jobs:
       - name: Checkout repo
         run: |
           ls -lah
-          sudo apt-get install repo
-          sudo chmod +x scripts/fetch_distribution_package.sh
+          apt-get install repo
+          chmod +x scripts/fetch_distribution_package.sh
           ./scripts/fetch_distribution_package.sh
 
       - name: Install docker
         run: |
-          sudo apt-get update
-          sudo apt-get install ca-certificates curl gnupg
-          sudo install -m 0755 -d /etc/apt/keyrings
+          apt-get update
+          apt-get install ca-certificates curl gnupg
+          install -m 0755 -d /etc/apt/keyrings
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          sudo chmod a+r /etc/apt/keyrings/docker.gpg
+          chmod a+r /etc/apt/keyrings/docker.gpg
           echo \
             "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
             "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            tee /etc/apt/sources.list.d/docker.list > /dev/null
+          apt-get update
+          apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
       - name: Build the docker image
         run: |
-          sudo chmod +x scripts/build_docker.sh
-          sudo ./scripts/build_docker.sh
-          sudo systemctl start docker
+          chmod +x scripts/build_docker.sh
+          ./scripts/build_docker.sh
+          systemctl start docker
           echo "old container removed"
-          sudo docker ps -a
+          docker ps -a
           docker images
-          sudo docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
+          docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
           echo "running container in detached state"
-          sudo docker ps
-          sudo chmod -R 777 data
+          docker ps
+          chmod -R 777 data
           ls -lah
-          sudo docker exec -i yocto bash -c "cd /data && ls -lah && source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
+          docker exec -i yocto bash -c "cd /data && ls -lah && source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
         
 
       #- name: Run the Yocto build in the docker container and create the SDK
