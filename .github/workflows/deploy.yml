@@ -11,8 +11,10 @@ concurrency:
 name: deploy
 jobs:
   build_and_deploy:
-    runs-on: [self-hosted ubuntu-latest]
+    runs-on: self-hosted
     name: ubuntu build
+    container:
+      image: ubuntu
 
     steps:
       - uses: actions/checkout@main
