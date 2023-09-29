@@ -17,10 +17,12 @@ jobs:
       image: ubuntu
 
     steps:
-      - uses: actions/checkout@main
-        with:
-          submodules: true
+      - name: Install Git
+        run: sudo apt-get install git-core
 
+      - uses: actions/checkout@main
+        with: 
+          submodules: true
       - name: Checkout repo
         run: |
           ls -lah
