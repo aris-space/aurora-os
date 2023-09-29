@@ -18,7 +18,10 @@ jobs:
 
     steps:
       - name: Install Git
-        run: apt-get update && apt-get install git-core
+        run: |
+          yes | apt-get update
+          yes | apt-get upgrade
+          yes | apt-get install git-core
 
       - uses: actions/checkout@main
         with: 
