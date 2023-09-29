@@ -11,7 +11,7 @@ concurrency:
 name: deploy
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     name: ubuntu build
 
     steps:
