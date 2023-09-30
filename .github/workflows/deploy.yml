@@ -15,13 +15,15 @@ jobs:
     name: ubuntu build
     container:
       image: ubuntu
+      options: 
+        cpus: 10
 
     steps:
       - name: Install Git
         run: |
-          yes | apt-get update
-          yes | apt-get upgrade
-          yes | apt-get install git-core
+          apt-get update
+          apt-get upgrade -y
+          apt-get install -y git-core
 
       - uses: actions/checkout@main
         with: 
@@ -29,39 +31,44 @@ jobs:
       - name: Checkout repo
         run: |
           ls -lah
-          yes | apt-get install repo
+          apt-get install -y repo
           chmod +x scripts/fetch_distribution_package.sh
           ./scripts/fetch_distribution_package.sh
 
-      - name: Install docker
+      - name: Install dependencies
         run: |
-          yes | apt-get update
-          yes | apt-get install ca-certificates curl gnupg
-          install -m 0755 -d /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          chmod a+r /etc/apt/keyrings/docker.gpg
-          echo \
-            "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-            "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-            tee /etc/apt/sources.list.d/docker.list > /dev/null
-          yes | apt-get update
-          yes | apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+          apt-get update
+          apt-get install -y gawk wget git-core diffstat unzip texinfo \
+                        gcc-multilib build-essential chrpath socat cpio \
+                        python3 python3-pip python3-pexpect \
+                        xz-utils debianutils iputils-ping python3-git \
+                        python3-jinja2 libegl1-mesa libsdl1.2-dev xterm \
+                        locales python3-distutils libssl-dev gdisk sudo \
+                        libgmp-dev libmpc-dev pylint file zstd lz4 vim bsdmainutils
+          
 
-      - name: Build the docker image
+      #- name: Build the docker image
+        #run: |
+          #chmod +x scripts/build_docker.sh
+          #./scripts/build_docker.sh
+          #systemctl start docker
+          #echo "old container removed"
+          #docker ps -a
+          #docker images
+          #docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
+          #echo "running container in detached state"
+          #docker ps
+          #chmod -R 777 data
+          #ls -lah
+          #docker exec -i yocto bash -c "cd /data && ls -lah && source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
+      
+      - name: Run the Yocto build
         run: |
-          chmod +x scripts/build_docker.sh
-          ./scripts/build_docker.sh
-          systemctl start docker
-          echo "old container removed"
-          docker ps -a
-          docker images
-          docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
-          echo "running container in detached state"
-          docker ps
-          chmod -R 777 data
+          cd data
           ls -lah
-          docker exec -i yocto bash -c "cd /data && ls -lah && source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
-        
+          source scripts/setup_env.sh
+          bitbake aurora-image-core
+          bitbake -c populate_sdk aurora-image-core
 
       #- name: Run the Yocto build in the docker container and create the SDK
       #  run: |
@@ -75,7 +82,7 @@ jobs:
 
       - name: Create the SD card image
         run: |
-          cd data/openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/scripts
+          cd openstlinux-kirkstone/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1/scripts
           ./create_sdcard_from_flashlayout.sh ../flashlayout_aurora-image-core/extensible/FlashLayout_sdcard_stm32mp157c-dk2-extensible.tsv
 
       - name: Save the SD card image as an artifact
