@@ -27,6 +27,8 @@ jobs:
 
       - name: Checkout repo
         run: |
+          ./scripts/fetch_distribution_package.sh
+
         #  ls -lah
         #  apt-get install -y repo
         #  chmod +x scripts/fetch_distribution_package.sh
