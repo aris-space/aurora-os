@@ -15,12 +15,6 @@ jobs:
     name: ubuntu build
 
     steps:
-      #- name: Install Git
-      #  run: |
-      #    apt-get update
-      #    apt-get upgrade -y
-      #    apt-get install -y git-core
-
       - uses: actions/checkout@main
         with: 
           submodules: true
@@ -29,38 +23,6 @@ jobs:
         run: |
           ./scripts/fetch_distribution_package.sh
 
-        #  ls -lah
-        #  apt-get install -y repo
-        #  chmod +x scripts/fetch_distribution_package.sh
-          ./scripts/fetch_distribution_package.sh
-
-        #- name: Install dependencies
-        #run: |
-        #  apt-get update
-        #  apt-get install -y gawk wget git-core diffstat unzip texinfo \
-        #                gcc-multilib build-essential chrpath socat cpio \
-        #                python3 python3-pip python3-pexpect \
-        #                xz-utils debianutils iputils-ping python3-git \
-        #                python3-jinja2 libegl1-mesa libsdl1.2-dev xterm \
-        #                locales python3-distutils libssl-dev gdisk sudo \
-        #                libgmp-dev libmpc-dev pylint file zstd lz4 vim bsdmainutils
-          
-
-      #- name: Build the docker image
-        #run: |
-          #chmod +x scripts/build_docker.sh
-          #./scripts/build_docker.sh
-          #systemctl start docker
-          #echo "old container removed"
-          #docker ps -a
-          #docker images
-          #docker run -i -d -P --name yocto -v ./data/:/data ubuntu-yocto
-          #echo "running container in detached state"
-          #docker ps
-          #chmod -R 777 data
-          #ls -lah
-          #docker exec -i yocto bash -c "cd /data && ls -lah && source scripts/setup_env.sh && bitbake aurora-image-core && bitbake -c populate_sdk aurora-image-core"
-      
       - name: Run the Yocto build
         run: |
           cd data
@@ -69,15 +31,6 @@ jobs:
           bitbake aurora-image-core
           bitbake -c populate_sdk aurora-image-core
 
-      #- name: Run the Yocto build in the docker container and create the SDK
-      #  run: |
-      
-      #    sudo chmod +x scripts/start_docker.sh
-      #    sudo ./scripts/start_docker.sh
-      #    cd data
-      #    source scripts/setup_env.sh
-      #    bitbake aurora-image-core
-      #    bitbake -c populate_sdk aurora-image-core
 
       - name: Create the SD card image
         run: |
