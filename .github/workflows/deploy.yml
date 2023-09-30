@@ -25,7 +25,7 @@ jobs:
         with: 
           submodules: true
 
-        - name: Checkout repo
+      - name: Checkout repo
         run: |
         #  ls -lah
         #  apt-get install -y repo
