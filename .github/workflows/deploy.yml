@@ -15,8 +15,7 @@ jobs:
     name: ubuntu build
     container:
       image: ubuntu
-      options: 
-        cpus: 10
+
 
     steps:
       - name: Install Git
