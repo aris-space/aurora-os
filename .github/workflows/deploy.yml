@@ -21,13 +21,13 @@ jobs:
 
       - name: Checkout repo
         run: |
-          ./scripts/fetch_distribution_package.sh
+          yes | ./scripts/fetch_distribution_package.sh
 
       - name: Run the Yocto build
         run: |
           cd data
           ls -lah
-          source scripts/setup_env.sh
+          yes | source scripts/setup_env.sh
           bitbake aurora-image-core
           bitbake -c populate_sdk aurora-image-core
 
