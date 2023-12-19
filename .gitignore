@@ -2,4 +2,5 @@
 /data/minimal_image/
 /data/build/bitbake-cookerdaemon.log
 /data/openstlinux-5.10-dunfell-mp1-21-03-31/
-
+/output
+!/output/.keep

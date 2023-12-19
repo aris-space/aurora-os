@@ -3,7 +3,7 @@ FROM ubuntu
 # The following 2 lines are added to avoid hanging the container creation. See <https://grigorkh.medium.com/fix-tzdata-hangs-docker-image-build-cdb52cc3360d>
 ENV TZ=Europe/Brussels
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get update && apt-get install -y gawk wget git-core diffstat unzip texinfo \
+RUN apt-get update && apt-get install -y gawk wget git-core diffstat unzip texinfo repo \
                                              gcc-multilib build-essential chrpath socat cpio \
                                              python3 python3-pip python3-pexpect \
                                              xz-utils debianutils iputils-ping python3-git \
@@ -30,3 +30,9 @@ RUN git config --global user.email "janko.uehlinger@infosys.ch"
 RUN git config --global user.name "Janko Uehlinger"
 
 WORKDIR /home/dev
+COPY ./scripts scripts
+RUN ./scripts/fetch_distribution_package.sh && mkdir src/layers/meta-aurora
+COPY ./meta-aurora src/layers/meta-aurora
+RUN ./scripts/setup_env.sh
+
+CMD ./scripts/bitbake.sh
